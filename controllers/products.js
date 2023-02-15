@@ -26,9 +26,9 @@ export const getAllProducts = asyncWrapper(async (req, res, next) => {
     const operatorMap = {
       ">": "$gt",
       ">=": "$gte",
-      "=": "$gt",
-      "<": "$gt",
-      "<=": "$gt",
+      "=": "$eq",
+      "<": "$lt",
+      "<=": "$lte",
     };
 
     const regEx = /\b(<|<=|=|>=|>)\b/g;
