@@ -32,17 +32,16 @@ export const getAllProducts = asyncWrapper(async (req, res, next) => {
     };
 
     const regEx = /\b(<|<=|=|>=|>)\b/g;
-    let filters = numericFilters.replace(
-      regEx,
-      (match) => `-${operatorMap[match]}-`
-    );
-    const options = ["price", "rating"];
-    filters = filters.split(",").forEach((element) => {
-      const [field, operator, value] = element.split("-");
-      if (options.includes(field)) {
-        queryObject[field] = { [operator]: Number(value) };
+
+    let filters = numericFilters.split(",").reduce((acc, element) => {
+      const [field, operator, value] = element.split(regEx);
+      if (["price", "rating"].includes(field)) {
+        acc[field] = { [operatorMap[operator]]: Number(value) };
       }
-    });
+      return acc;
+    }, {});
+
+    Object.assign(queryObject, filters);
   }
 
   let result = Product.find(queryObject);
